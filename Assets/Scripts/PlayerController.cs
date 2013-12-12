@@ -25,10 +25,21 @@ public class PlayerController : MonoBehaviour
 	
 	void FixedUpdate()
 	{
-		float moveHorizontal = Input.GetAxis("Horizontal");
-		float moveVertical = Input.GetAxis("Vertical");
-		
+		float moveHorizontal = 0.0f;
+		float moveVertical = 0.0f;
+#if UNITY_EDITOR
+		moveHorizontal = Input.GetAxis("Horizontal");
+		moveVertical = Input.GetAxis("Vertical");
+#else
+		moveHorizontal = Input.acceleration.x;
+		moveVertical = Input.acceleration.y;
+#endif
 		Vector3 movement = new Vector3(moveHorizontal, 0, moveVertical);
+		if (movement.magnitude > 1.0f)
+		{
+			movement.Normalize();
+		}
+
 		rigidbody.AddForce(movement * Speed * Time.deltaTime);
 	}
 	
